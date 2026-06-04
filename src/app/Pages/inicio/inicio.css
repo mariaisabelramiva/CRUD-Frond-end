@@ -1,0 +1,201 @@
+/* Contenedor principal */
+.container-card {
+  width: 90%;
+  max-width: 1200px;
+  margin: 40px auto;
+  border: 3px solid #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(220, 53, 69, 0.15), 0 16px 48px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Header de la tarjeta */
+::ng-deep .mat-mdc-card-header {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  padding: 30px;
+  border-bottom: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+::ng-deep .mat-mdc-card-title {
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Contenido de la tarjeta */
+::ng-deep .mat-mdc-card-content {
+  padding: 15px 30px 30px 30px;
+  background-color: #fafafa;
+}
+
+/* Botón Nuevo Empleado */
+.btn-nuevo {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  border: 2px solid #000 !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  padding: 12px 24px !important;
+  margin-top: 20px !important;
+  margin-bottom: 24px !important;
+  transition: all 0.3s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.btn-nuevo:hover {
+  background-color: #c82333 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4) !important;
+}
+
+.btn-nuevo:active {
+  transform: translateY(0) !important;
+}
+
+/* Tabla */
+::ng-deep .mat-mdc-table {
+  background-color: #ffffff;
+  border-collapse: collapse;
+}
+
+/* Headers de tabla */
+::ng-deep .mat-mdc-header-cell {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border: 2px solid #000 !important;
+  padding: 16px !important;
+  text-transform: uppercase !important;
+  font-size: 14px !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Filas de tabla */
+::ng-deep .mat-mdc-cell {
+  border: 1px solid #e0e0e0 !important;
+  padding: 16px !important;
+  color: #333333 !important;
+}
+
+/* Hover en filas */
+::ng-deep .mat-mdc-row:hover {
+  background-color: #ffe6e6 !important;
+  transition: background-color 0.3s ease !important;
+}
+
+/* Filas alternas */
+::ng-deep .mat-mdc-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+::ng-deep .mat-mdc-row:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+/* Botones de acción en tabla */
+.btn-action {
+  border: 2px solid #000 !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease !important;
+  margin: 0 4px !important;
+  padding: 0 !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 24px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  background-color: transparent !important;
+}
+
+::ng-deep .mat-mdc-icon-button.btn-edit {
+  color: #dc3545 !important;
+  background-color: rgba(220, 53, 69, 0.12) !important;
+}
+
+::ng-deep .mat-mdc-icon-button.btn-edit:hover {
+  background-color: rgba(220, 53, 69, 0.25) !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35) !important;
+  transform: scale(1.08);
+}
+
+::ng-deep .mat-mdc-icon-button.btn-delete {
+  color: #000000 !important;
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+::ng-deep .mat-mdc-icon-button.btn-delete:hover {
+  background-color: rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+  transform: scale(1.08);
+}
+
+/* Contenedor de tabla con scroll */
+.table-container {
+  overflow-x: auto;
+  border: 2px solid #000;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+/* Elevación personalizada */
+::ng-deep .mat-elevation-z2 {
+  border: 2px solid #000 !important;
+  border-radius: 8px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container-card {
+    width: 95%;
+    margin: 20px auto;
+  }
+
+  ::ng-deep .mat-mdc-card-header {
+    padding: 20px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  ::ng-deep .mat-mdc-card-title {
+    font-size: 22px;
+  }
+
+  ::ng-deep .mat-mdc-header-cell,
+  ::ng-deep .mat-mdc-cell {
+    padding: 12px !important;
+    font-size: 12px !important;
+  }
+
+  .btn-nuevo {
+    width: 100%;
+  }
+}
+
+/* Animación de carga */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container-card {
+  animation: fadeIn 0.5s ease-out;
+}

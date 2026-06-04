@@ -1,2 +1,71 @@
-<p>inicio works!</p>
-<mat-card></mat-card>
+<div class="container-card">
+  <mat-card style="border: none; box-shadow: none; margin: 0; padding: 0;">
+    <mat-card-header>
+      <mat-card-title>📋 Lista de Empleados</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <button mat-flat-button class="btn-nuevo" (click)="nuevo()">
+        <mat-icon style="margin-right: 8px;">add_circle</mat-icon>
+        Nuevo empleado
+      </button>
+
+      <div class="table-container">
+        <table mat-table [dataSource]="listaEmpleados" class="mat-elevation-z2">
+
+          <!-- Nombre Completo Column -->
+          <ng-container matColumnDef="nombreCompleto">
+            <th mat-header-cell *matHeaderCellDef>👤 Nombre Completo</th>
+            <td mat-cell *matCellDef="let element">{{ element.nombreCompleto }}</td>
+          </ng-container>
+
+          <!-- Correo Column -->
+          <ng-container matColumnDef="Correo">
+            <th mat-header-cell *matHeaderCellDef>📧 Correo</th>
+            <td mat-cell *matCellDef="let element">{{ element.Correo }}</td>
+          </ng-container>
+
+          <!-- Sueldo Column -->
+          <ng-container matColumnDef="sueldo">
+            <th mat-header-cell *matHeaderCellDef>💰 Sueldo</th>
+            <td mat-cell *matCellDef="let element">{{ element.sueldo }}</td>
+          </ng-container>
+
+          <!-- Fecha Contrato Column -->
+          <ng-container matColumnDef="fechaContrato">
+            <th mat-header-cell *matHeaderCellDef>📅 Fecha Contrato</th>
+            <td mat-cell *matCellDef="let element">{{ element.fechaContrato }}</td>
+          </ng-container>
+
+          <!-- Acciones Column -->
+          <ng-container matColumnDef="acción">
+            <th mat-header-cell *matHeaderCellDef>⚙️ Acciones</th>
+            <td mat-cell *matCellDef="let element" style="display: flex; gap: 8px; align-items: center;">
+              <button 
+                mat-icon-button 
+                class="btn-action btn-edit" 
+                matTooltip="Editar empleado" 
+                matTooltipPosition="above"
+                (click)="editar(element)"
+                title="Editar">
+                ✏️
+              </button>
+              <button 
+                mat-icon-button 
+                class="btn-action btn-delete" 
+                matTooltip="Eliminar empleado" 
+                matTooltipPosition="above"
+                (click)="eliminar(element)"
+                title="Eliminar">
+                🗑️
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
