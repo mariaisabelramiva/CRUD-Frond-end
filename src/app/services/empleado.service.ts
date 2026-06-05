@@ -23,15 +23,15 @@ return this.http.get<Empleado[]>(this.apiUrl);
 }
 
 obtener (id:number){
-return this.http.get<Empleado[]>(`${this.apiUrl}/${id}` );//se utilizan comillas invertidas para concatenar la url con el id de una forma mas facil 
+return this.http.get<Empleado>(`${this.apiUrl}/${id}` );//se utilizan comillas invertidas para concatenar la url con el id de una forma mas facil 
 }
 
-crear(objeto:Empleado){
-return this.http.post<ResponseAPI>(this.apiUrl,objeto);
+crear(objeto: any) {
+  return this.http.post<ResponseAPI>(this.apiUrl, objeto);
 }
 
-editar(objeto:Empleado){
-return this.http.put<ResponseAPI>(this.apiUrl,objeto);
+editar(objeto: any) {
+  return this.http.put<ResponseAPI>(`${this.apiUrl}/${objeto.idEmpleado}`, objeto);
 }
 
 

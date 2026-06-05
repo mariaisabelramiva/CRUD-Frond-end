@@ -7,7 +7,7 @@
     <mat-card-content>
       <button mat-flat-button class="btn-nuevo" (click)="nuevo()">
         <mat-icon style="margin-right: 8px;">add_circle</mat-icon>
-        Nuevo empleado
+        crear empleado
       </button>
 
       <div class="table-container">
@@ -55,7 +55,7 @@
                 class="btn-action btn-delete" 
                 matTooltip="Eliminar empleado" 
                 matTooltipPosition="above"
-                (click)="eliminar(element)"
+                (click)="eliminar(element.idEmpleado)"
                 title="Eliminar">
                 🗑️
               </button>

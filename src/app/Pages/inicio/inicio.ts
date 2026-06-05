@@ -24,10 +24,10 @@ const ELEMENT_DATA: Empleado[] = [
 
 @Component({
   selector: 'app-inicio',
-  standalone:true,
-  imports: [MatCardModule,MatTableModule,MatIconModule,MatButtonModule,MatTooltipModule],
+  standalone: true,
+  imports: [MatCardModule, MatTableModule, MatIconModule, MatButtonModule, MatTooltipModule],
   templateUrl: './inicio.html',
-  styleUrl: './inicio.css',
+  styleUrls: ['./inicio.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -48,15 +48,21 @@ export class Inicio {
 
   obtenerEmpleados(){
     this.empleadoServicio.lista().subscribe({
-      next:(data)=>{
-    if(data.length>0){
-      this.listaEmpleados=data;
+      next:(data: any)=>{
+    if (Array.isArray(data) && data.length > 0) {
+      // Normalizar propiedades recibidas desde el backend ("correo" vs "Correo")
+      this.listaEmpleados = data.map((item: any) => ({
+        idEmpleado: item.idEmpleado,
+        nombreCompleto: item.nombreCompleto,
+        Correo: item.Correo || item.correo || '',
+        sueldo: item.sueldo,
+        fechaContrato: item.fechaContrato
+      }));
       this.cdr.markForCheck();
-    }else{
+    } else {
       alert("no se encontraron empleados");
     }
-   
-},
+  },
 error:(err)=>{  
    console.log(err.message)
       }
