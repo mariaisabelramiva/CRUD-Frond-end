@@ -1,4 +1,5 @@
 //aca se realizan las solicitudes http para las APIs y la conexión
+//comunicarse con la API
 
 import { HttpClient} from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';

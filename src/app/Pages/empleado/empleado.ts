@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { EmpleadoService } from '../../services/empleado.service';
 import { Empleado } from '../../Models/Empleado';
 import { Router } from '@angular/router';
+import { ResponseAPI } from '../../Models/ResponseAPI';
 
 @Component({
   selector: 'app-empleado',
@@ -46,13 +47,13 @@ export class EmpleadoComponent implements OnInit {
   ngOnInit(): void {
     if (this.idEmpleado > 0) {
       this.empleadoServicio.obtener(this.idEmpleado).subscribe({
-        next: (data: any) => {
-          const correoValue = (data && (data.Correo || data.correo)) || '';
+        next: (data) => {
+          const correoValue = (data && (data.correo || data.correo)) || '';
           const fechaFormato = this.parseBackendDateToISO(data?.fechaContrato);
           this.formEmpleado.patchValue({
             idEmpleado: Number(data.idEmpleado) || 0,
             nombreCompleto: data.nombreCompleto,
-            Correo: correoValue,
+            correo: correoValue,
             sueldo: data.sueldo,
             fechaContrato: fechaFormato
           });
@@ -120,7 +121,7 @@ export class EmpleadoComponent implements OnInit {
   guardar() {
     const fechaParaBackend = this.formatDateToBackend(this.formEmpleado.value.fechaContrato);
 
-    const payload: any = {
+    const payload: Empleado = {
       idEmpleado: Number(this.idEmpleado) || 0,
       nombreCompleto: this.formEmpleado.value.nombreCompleto,
       correo: this.formEmpleado.value.Correo || '',
@@ -137,8 +138,8 @@ export class EmpleadoComponent implements OnInit {
     request$.subscribe({
       next: (data) => {
         console.log('Respuesta del servidor:', data);
-        const success = data && typeof (data as any).isSuccess === 'boolean'
-          ? (data as any).isSuccess
+        const success = data && typeof (data as ResponseAPI).isSuccess === 'boolean'
+          ? (data as ResponseAPI).isSuccess
           : true;
 
         if (success) {
