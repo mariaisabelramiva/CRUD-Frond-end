@@ -7,8 +7,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { Empleado } from '../../Models/Empleado';
 import { Router } from '@angular/router';
-import {Swal} from 'sweetalert2';
-
+import Swal from 'sweetalert2';
 
 
 
@@ -73,21 +72,56 @@ error:(err)=>{
 
   
 
-  eliminar(idEmpleado:number){
-if(confirm("¿Desea eliminar el empleado?")){
-this.empleadoServicio.eliminar(idEmpleado).subscribe(
-  data => {
-    if (data.isSuccess) {
-      this.obtenerEmpleados();
-    } else {
-      alert("no se pudo eliminar");
-    }
-  },
-  err => {
-    console.log(err.message);
-  }
-);
+ eliminar(idEmpleado:number){
 
-  }
+  Swal.fire({
+    title: '¿Desea eliminar el empleado?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+
+    if (result.isConfirmed) {
+
+      this.empleadoServicio.eliminar(idEmpleado).subscribe(
+        data => {
+
+          if (data.isSuccess) {
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Eliminado',
+              text: 'El empleado fue eliminado correctamente'
+            });
+
+            this.obtenerEmpleados();
+
+          } else {
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo eliminar el empleado'
+            });
+
+          }
+
+        },
+        err => {
+          console.log(err.message);
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al eliminar'
+          });
+        }
+      );
+
+    }
+
+  });
+
 }
 }

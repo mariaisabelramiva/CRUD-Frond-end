@@ -7,6 +7,7 @@ import { EmpleadoService } from '../../services/empleado.service';
 import { Empleado } from '../../Models/Empleado';
 import { Router } from '@angular/router';
 import { ResponseAPI } from '../../Models/ResponseAPI';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-empleado',
@@ -32,35 +33,33 @@ export class EmpleadoComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
 
-
   // formulario empleado
 
   public formEmpleado: FormGroup = this.formBuilder.group({
     idEmpleado: [0],
     nombreCompleto: ['', Validators.required],
-    Correo: ['', [Validators.required, Validators.email]],
+    correo: ['', [Validators.required, Validators.email]],
     sueldo: [0, Validators.required],
-    fechaContrato: ['', Validators.required]
+    fechaContrato: ['', Validators.required],
   });
-
 
   ngOnInit(): void {
     if (this.idEmpleado > 0) {
       this.empleadoServicio.obtener(this.idEmpleado).subscribe({
         next: (data) => {
-          const correoValue = (data && (data.correo || data.correo)) || '';
+          const correoValue = data?.correo || '';
           const fechaFormato = this.parseBackendDateToISO(data?.fechaContrato);
           this.formEmpleado.patchValue({
             idEmpleado: Number(data.idEmpleado) || 0,
             nombreCompleto: data.nombreCompleto,
             correo: correoValue,
             sueldo: data.sueldo,
-            fechaContrato: fechaFormato
+            fechaContrato: fechaFormato,
           });
         },
         error: (err) => {
           console.error('Error al obtener empleado:', err);
-        }
+        },
       });
     }
   }
@@ -124,28 +123,50 @@ export class EmpleadoComponent implements OnInit {
     const payload: Empleado = {
       idEmpleado: Number(this.idEmpleado) || 0,
       nombreCompleto: this.formEmpleado.value.nombreCompleto,
-      correo: this.formEmpleado.value.Correo || '',
+      correo: this.formEmpleado.value.correo || '',
       sueldo: Number(this.formEmpleado.value.sueldo) || 0,
-      fechaContrato: fechaParaBackend
+      fechaContrato: fechaParaBackend,
     };
 
-    console.log('Guardando empleado (payload):', payload, 'idEmpleado en componente:', this.idEmpleado);
+    console.log(
+      'Guardando empleado (payload):',
+      payload,
+      'idEmpleado en componente:',
+      this.idEmpleado,
+    );
 
-    const request$ = this.idEmpleado === 0
-      ? this.empleadoServicio.crear(payload)
-      : this.empleadoServicio.editar(payload);
+    const request$ =
+      this.idEmpleado === 0
+        ? this.empleadoServicio.crear(payload)
+        : this.empleadoServicio.editar(payload);
 
     request$.subscribe({
       next: (data) => {
         console.log('Respuesta del servidor:', data);
-        const success = data && typeof (data as ResponseAPI).isSuccess === 'boolean'
-          ? (data as ResponseAPI).isSuccess
-          : true;
+        const success =
+          data && typeof (data as ResponseAPI).isSuccess === 'boolean'
+            ? (data as ResponseAPI).isSuccess
+            : true;
 
+        //Alertas de exito
         if (success) {
-          this.router.navigate(['/']);
-        } else {
-          alert(this.idEmpleado === 0 ? 'Error al crear el empleado' : 'Error al editar el empleado');
+          if (this.idEmpleado === 0) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Empleado creado',
+              text: 'El empleado fue registrado correctamente',
+            }).then(() => {
+              this.router.navigate(['/']);
+            });
+          } else {
+            Swal.fire({
+              icon: 'success',
+              title: 'Actualización exitosa',
+              text: 'Los datos se actualizaron correctamente',
+            }).then(() => {
+              this.router.navigate(['/']);
+            });
+          }
         }
       },
       error: (err) => {
@@ -153,12 +174,15 @@ export class EmpleadoComponent implements OnInit {
         console.error('Status:', err.status);
         console.error('Message:', err.message);
         console.error('Error:', err.error);
-        alert('No se pudo guardar el empleado. Revisa la consola.');
-      }
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo guardar el empleado',
+        });
+      },
     });
   }
   volver(): void {
     this.router.navigate(['/']);
   }
 }
-
