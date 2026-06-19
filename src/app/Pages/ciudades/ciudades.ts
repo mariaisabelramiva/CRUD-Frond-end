@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./ciudades.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EmpleadoComponent implements OnInit {
+export class Ciudadcomponent implements OnInit {
   private _idEmpleado = 0;
 
   @Input()
@@ -61,7 +61,7 @@ export class EmpleadoComponent implements OnInit {
           console.error('Error al obtener empleado:', err);
         },
       });
-    }
+    } 
   }
 
   private parseBackendDateToISO(fecha: string | Date | undefined): string {

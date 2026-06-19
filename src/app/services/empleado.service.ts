@@ -20,7 +20,7 @@ export class EmpleadoService {
 
   // metodos-Solicitudes
   lista()  {
-    return this.http.get<Empleado[]>(this.apiUrl);
+    return this.http.get<Ciudad[]>(this.apiUrl);
   }
 
   obtener(id: number) {
