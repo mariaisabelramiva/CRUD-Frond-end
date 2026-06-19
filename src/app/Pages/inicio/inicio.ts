@@ -1,4 +1,4 @@
-import { Component , inject, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import { Component , inject, ChangeDetectionStrategy, ChangeDetectorRef, Inject} from '@angular/core';
 import {EmpleadoService} from '../../services/empleado.service';
 import {MatCardModule} from '@angular/material/card';
 import {MatTableModule} from '@angular/material/table';
@@ -22,7 +22,7 @@ import Swal from 'sweetalert2';
 })
 
 export class Inicio {
-   constructor (private  router:Router){}
+   constructor (  private router: Router){}
 
   //se recibe la lista de empleados y toca visualizarla en el html mediante un tabla 
   private empleadoServicio= inject(EmpleadoService);
@@ -79,7 +79,11 @@ error:(err)=>{
     icon: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar'
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: 'rgb(32, 168, 61)', // Clases de Bootstrap
+    cancelButtonColor: 'rgb(206, 64, 64)',
+
+
   }).then((result) => {
 
     if (result.isConfirmed) {
@@ -111,11 +115,7 @@ error:(err)=>{
         err => {
           console.log(err.message);
 
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Ocurrió un error al eliminar'
-          });
+    
         }
       );
 

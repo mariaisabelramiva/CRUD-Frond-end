@@ -6,5 +6,5 @@ export interface Empleado {
     fechaContrato: string;
     accion?: string;
 }
-//representa la respuesta que se tinene en la lista y para obtebner 
+//representa la respuesta que se tiene en la lista y para obtener 
 //estructura de datos que maneja la api

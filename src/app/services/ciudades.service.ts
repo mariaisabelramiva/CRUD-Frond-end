@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class EmpleadoService {
+export class CiudadesService {
   private http = inject(HttpClient);
   private apiUrl: string = appsettings.apiUrl + 'Empleado';
 
@@ -27,7 +27,7 @@ export class EmpleadoService {
     return this.http.get<Empleado>(`${this.apiUrl}/${id}`); //se utilizan comillas invertidas para concatenar la url con el id de una forma mas facil
   }
 
-  crear(objeto: any) {
+  crear(objeto: string) {
     return this.http.post<ResponseAPI>(this.apiUrl, objeto);
   }
 
