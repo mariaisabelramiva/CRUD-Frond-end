@@ -2,9 +2,12 @@ import { Component, ChangeDetectionStrategy, inject, Input, OnInit } from '@angu
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmpleadoService } from '../../services/empleado.service';
+import { CiudadesService } from '../../services/ciudades.service';
 import { Empleado } from '../../Models/Empleado';
+import { Ciudad } from '../../Models/Ciudad';
 import { Router } from '@angular/router';
 import { ResponseAPI } from '../../Models/ResponseAPI';
 import Swal from 'sweetalert2';
@@ -12,13 +15,15 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-empleado',
   standalone: true,
-  imports: [MatInputModule, MatFormFieldModule, MatButtonModule, ReactiveFormsModule],
+  imports: [MatInputModule, MatFormFieldModule, MatButtonModule, MatSelectModule, ReactiveFormsModule],
   templateUrl: './empleado.html',
   styleUrls: ['./empleado.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmpleadoComponent implements OnInit {
   private _idEmpleado = 0;
+
+
 
   @Input()
   set idEmpleado(value: string | number) {
@@ -30,13 +35,18 @@ export class EmpleadoComponent implements OnInit {
   }
 
   private empleadoServicio = inject(EmpleadoService);
+  private ciudadServicio = inject(CiudadesService);
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
+
+  public listaCiudades: Ciudad[] = [];
+  public guardando = false;
 
   // formulario empleado
 
   public formEmpleado: FormGroup = this.formBuilder.group({
     idEmpleado: [0],
+    idCiudad: [0, [Validators.required, Validators.min(1)]],
     nombreCompleto: ['', Validators.required],
     correo: ['', [Validators.required, Validators.email]],
     sueldo: [0, Validators.required],
@@ -44,6 +54,8 @@ export class EmpleadoComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.cargarCiudades();
+
     if (this.idEmpleado > 0) {
       this.empleadoServicio.obtener(this.idEmpleado).subscribe({
         next: (data) => {
@@ -51,6 +63,7 @@ export class EmpleadoComponent implements OnInit {
           const fechaFormato = this.parseBackendDateToISO(data?.fechaContrato);
           this.formEmpleado.patchValue({
             idEmpleado: Number(data.idEmpleado) || 0,
+            idCiudad: Number(data.idCiudad) || 0,
             nombreCompleto: data.nombreCompleto,
             correo: correoValue,
             sueldo: data.sueldo,
@@ -62,6 +75,17 @@ export class EmpleadoComponent implements OnInit {
         },
       });
     }
+  }
+
+  private cargarCiudades(): void {
+    this.ciudadServicio.lista().subscribe({
+      next: (data) => {
+        this.listaCiudades = Array.isArray(data) ? data : [];
+      },
+      error: (err) => {
+        console.error('Error al cargar ciudades:', err);
+      },
+    });
   }
 
   private parseBackendDateToISO(fecha: string | Date | undefined): string {
@@ -118,22 +142,30 @@ export class EmpleadoComponent implements OnInit {
   }
 
   guardar() {
-    const fechaParaBackend = this.formatDateToBackend(this.formEmpleado.value.fechaContrato);
+    if (this.formEmpleado.invalid) {
+      this.formEmpleado.markAllAsTouched();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Completa los campos',
+        text: 'Debes llenar todos los datos obligatorios antes de guardar.',
+      });
+      return;
+    }
+
+    this.guardando = true;
+    const valores = this.formEmpleado.getRawValue();
+    const fechaParaBackend = this.formatDateToBackend(valores.fechaContrato);
 
     const payload: Empleado = {
-      idEmpleado: Number(this.idEmpleado) || 0,
-      nombreCompleto: this.formEmpleado.value.nombreCompleto,
-      correo: this.formEmpleado.value.correo || '',
-      sueldo: Number(this.formEmpleado.value.sueldo) || 0,
+      idEmpleado: Number(valores.idEmpleado) || 0,
+      idCiudad: Number(valores.idCiudad) || 0,
+      nombreCompleto: String(valores.nombreCompleto ?? '').trim(),
+      correo: String(valores.correo ?? '').trim(),
+      sueldo: Number(valores.sueldo) || 0,
       fechaContrato: fechaParaBackend,
     };
 
-    console.log(
-      'Guardando empleado (payload):',
-      payload,
-      'idEmpleado en componente:',
-      this.idEmpleado,
-    );
+    console.log('Guardando empleado (payload):', payload);
 
     const request$ =
       this.idEmpleado === 0
@@ -142,42 +174,41 @@ export class EmpleadoComponent implements OnInit {
 
     request$.subscribe({
       next: (data) => {
+        this.guardando = false;
         console.log('Respuesta del servidor:', data);
         const success =
           data && typeof (data as ResponseAPI).isSuccess === 'boolean'
             ? (data as ResponseAPI).isSuccess
             : true;
 
-        //Alertas de exito
         if (success) {
-          if (this.idEmpleado === 0) {
-            Swal.fire({
-              icon: 'success',
-              title: 'Empleado creado',
-              text: 'El empleado fue registrado correctamente',
-            }).then(() => {
-              this.router.navigate(['/']);
-            });
-          } else {
-            Swal.fire({
-              icon: 'success',
-              title: 'Actualización exitosa',
-              text: 'Los datos se actualizaron correctamente',
-            }).then(() => {
-              this.router.navigate(['/']);
-            });
-          }
+          const titulo = this.idEmpleado === 0 ? 'Empleado creado' : 'Actualización exitosa';
+          const texto = this.idEmpleado === 0
+            ? 'El empleado fue registrado correctamente'
+            : 'Los datos se actualizaron correctamente';
+
+          Swal.fire({
+            icon: 'success',
+            title: titulo,
+            text: texto,
+          }).then(() => {
+            this.router.navigate(['/']);
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'No se pudo guardar',
+            text: 'El servidor rechazó la solicitud.',
+          });
         }
       },
       error: (err) => {
+        this.guardando = false;
         console.error('Error completo:', err);
-        console.error('Status:', err.status);
-        console.error('Message:', err.message);
-        console.error('Error:', err.error);
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'No se pudo guardar el empleado',
+          text: 'No se pudo guardar el empleado. Revisa la conexión o los datos enviados.',
         });
       },
     });

@@ -4,7 +4,7 @@
 
 import { Injectable, inject } from '@angular/core';
 import { appsettings } from '../Settings/appsettings';
-import { Empleado } from '../Models/Empleado';
+import { Ciudad } from '../Models/Ciudad';
 import { ResponseAPI } from '../Models/ResponseAPI';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -14,32 +14,29 @@ import { Observable } from 'rxjs';
 })
 export class CiudadesService {
   private http = inject(HttpClient);
-  private apiUrl: string = appsettings.apiUrl + 'Empleado';
+  private apiUrl: string = appsettings.apiUrl + 'Ciudad';
 
   constructor() {}
 
   // metodos-Solicitudes
-  lista()  {
-    return this.http.get<Empleado[]>(this.apiUrl);
+  lista(): Observable<Ciudad[]> {
+    return this.http.get<Ciudad[]>(this.apiUrl);
   }
 
-  obtener(id: number) {
-    return this.http.get<Empleado>(`${this.apiUrl}/${id}`); //se utilizan comillas invertidas para concatenar la url con el id de una forma mas facil
+  obtener(id: number): Observable<Ciudad> {
+    return this.http.get<Ciudad>(`${this.apiUrl}/${id}`); //se utilizan comillas invertidas para concatenar la url con el id de una forma mas facil
   }
 
-  crear(objeto: string) {
+  crear(objeto: Ciudad): Observable<ResponseAPI> {
     return this.http.post<ResponseAPI>(this.apiUrl, objeto);
   }
 
-  editar(objeto: any) {
-    return this.http.put<ResponseAPI>(`${this.apiUrl}/${objeto.idEmpleado}`, objeto);
+  editar(objeto: Ciudad): Observable<ResponseAPI> {
+    return this.http.put<ResponseAPI>(`${this.apiUrl}/${objeto.idCiudad}`, objeto);
   }
 
-  eliminar(id: number) {
+  eliminar(id: number): Observable<ResponseAPI> {
     return this.http.delete<ResponseAPI>(`${this.apiUrl}/${id}`);
   }
-  obtenernumero(){
-      return Math.floor(Math.random() * 20);
 
-  }
 }

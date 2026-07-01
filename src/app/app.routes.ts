@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 import { Inicio } from './Pages/inicio/inicio';
 import { EmpleadoComponent } from './Pages/empleado/empleado';
-import {Ciudadcomponent} from './Pages/ciudades/ciudades';
+import {CiudadComponent } from './Pages/ciudad/ciudad';
 
 export const routes: Routes = [
   { path: '', component: Inicio },
   { path: 'orden-compra', component: Inicio },
   { path: 'empleado/:idEmpleado', component: EmpleadoComponent },
-  { path: 'ciudades/:idCiudad', component: Ciudadcomponent},
+  { path: 'ciudad/:idCiudad', component: CiudadComponent },
 ];
